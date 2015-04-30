@@ -102,9 +102,16 @@ int HashTable::linearHash(int key){
 *  Returns: returns its location in the table
 */
 int HashTable::quadraticHash(int key){
-	int retVal = -1;
-	//TODO: hash key
-	return retVal;
+	int retVal = -1, pos=0, idx=0, interval=0; 
+	// quadratic function 1 
+	//  h(k), h(k)+2, h(k)+6...   
+	int size = openTable.size(); // size = m number of slots
+	interval = key % size;
+	while (openTable[idx] > -1) {
+		idx =(  (interval + pos + (pos*pos)) %size);
+		pos++;	
+	}
+	return openTable[idx] > -1 ? idx : retVal;
 }
 
 /* Param: int key
@@ -117,7 +124,7 @@ int HashTable::doubleHash(int key) {
 	int idx = key % m;
 	// find empty spot. -1 if empty, -2 if deleted
 	while (openTable[idx] > -1) {
-		idx += interval;
+		idx += interval;  // mod size (i.e. could go out of range, need to wrap around) to beginning
 	}
 	return idx;
 }
