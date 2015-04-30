@@ -17,13 +17,15 @@ HashTable
 - `void insert(int key, int value)`
 	- inserts `value` into table based on `key`
 - `int find(int key)`
-	- returns value that corresponds to key, returns `-1` if not found
+	- returns value that corresponds to key, returns `<= -1` if not found
 - `bool delete(int key)`
 	- deletes value in table and returns `true`, returns `false` if key not found
 
 ###### private methods:
 - `int hashKey(int key)` -- Dan
 	- hashes `key` based on specified method and returns its location in the table
+- `int perfectHashKey(int key)` -- Tamer
+	- hashes `key` to find inner index for perfect hashing method
 - `int linearHash(int key)` -- Dan
 	- hashes `key` linearly
 - `int quadraticHash(int key)` -- Henry
