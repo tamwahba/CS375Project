@@ -19,6 +19,7 @@ public:
 
 private:
 	int hashKey(int key);
+	int perfectHashKey(int key);
 	int linearHash(int key);
 	int quadraticHash(int key);
 	int doubleHash(int key);
@@ -27,4 +28,5 @@ private:
 private:
 	std::vector<int> openTable;
 	std::vector<std::vector<int>> perfectTable;
+	METHOD method;
 };

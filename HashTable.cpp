@@ -22,17 +22,26 @@ HashTable::~HashTable()
 *  Returns: void
 */
 void HashTable::insert(int key, int value){
-	
+	if (method == PERFECT) {
+		perfectTable[hashKey(key)][perfectHashKey(hashKey(key))] = value;
+		return;
+	}
+	openTable[hashKey(key)] = value;
 }
 
 /* Param: int key
 *  Desc: finds the value that corresponds to the given key
-*  Returns: returns the value or `-1` if not found
+*  Returns: returns the value or `<-1` if not found
 */
 int HashTable::find(int key){
-	int pos = -1;
-	//TODO: Find key, set pos
-	return pos;
+	int pos = hashKey(key);
+	int val = -1;
+	if (method == PERFECT) {
+		val = perfectTable[pos][perfectHashKey(pos)];
+	} else {
+		val = openTable[pos];
+	}
+	return val;
 }
 
 /* Param: int key
@@ -40,9 +49,16 @@ int HashTable::find(int key){
 *  Returns: returns `true` if deleted or `false` if key not found
 */
 bool HashTable::remove(int key){
-	bool found = false;
-	//TODO: Delete key, set found to true
-	return found;
+	int pos = hashKey(key);
+	int val = -5;
+	if (method == PERFECT) {
+		val = perfectTable[pos][perfectHashKey(pos)];
+		perfectTable[pos][perfectHashKey(pos)] = -2;
+	} else {
+		val = openTable[pos];
+		openTable[pos] = -2;
+	}
+	return (val != -5);
 }
 
 /*---------------PRIVATE METHODS---------------*/
@@ -56,6 +72,11 @@ int HashTable::hashKey(int key){
 	//TODO: hash key, set pos
 	return pos;
 }
+
+int HashTable::perfectHashKey(int key){
+	return -1;
+}
+
 
 /* Param: int key
 *  Desc: hashes `key` linearly
