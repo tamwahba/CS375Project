@@ -1,30 +1,22 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <vector>
-
-class HashTable {
-public:
-    HashTable();
-    ~HashTable();
-    void OpenHashTable(METHOD m, int size);
-    void insert(int key, int value);
-    int find(int key);
-    bool delete(int key);
-
-private:
-	int hashKey(int key);
-	int linearHash(int key);
-	int quadraticHash(int key);
-	int doubleHash(int key);
-	int perfectHash(int key);
-
-private:
-	std::vector<int> openTable;
-	std::vector<std::vector>> perfectTable;	
-};
+#include "HashTable.h"
 
 HashTable::HashTable()
-{
+	:method{LINEAR} {
+		if (method == PERFECT)
+			perfectTable = std::vector<std::vector<int>>(100);
+		else
+			openTable = std::vector<int>(100, -1); // initialize all values to -1
+}
+
+/* Param: METHOD m, int Size
+*  Desc: initializes hash table with size `size` and hashing algorithm `m`.
+*/
+HashTable::HashTable(METHOD m, int size)
+	:method{m} {
+		if (method == PERFECT)
+			perfectTable = std::vector<std::vector<int>>(size);
+		else
+			openTable = std::vector<int>(size, -1); // initialize all values to -1
 }
 
 HashTable::~HashTable()
@@ -33,40 +25,49 @@ HashTable::~HashTable()
 
 /*---------------PUBLIC METHODS---------------*/
 
-/* Param: METHOD m, int Size
-*  Desc: initializes hash table with size `size` and hashing algorithm `m`.
-*  Returns: void
-*/
-void HashTable::OpenHashTable(METHOD m, int size){
-
-}
 
 /* Param: int key, int value
 *  Desc: inserts `value` into table based on `key`
 *  Returns: void
 */
 void HashTable::insert(int key, int value){
-	
+	if (method == PERFECT) {
+		perfectTable[hashKey(key)][perfectHashKey(hashKey(key))] = value;
+		return;
+	}
+	openTable[hashKey(key)] = value;
 }
 
 /* Param: int key
 *  Desc: finds the value that corresponds to the given key
-*  Returns: returns the value or `-1` if not found
+*  Returns: returns the value or `<-1` if not found
 */
 int HashTable::find(int key){
-	int pos = -1;
-	//TODO: Find key, set pos
-	return pos;
+	int pos = hashKey(key);
+	int val = -1;
+	if (method == PERFECT) {
+		val = perfectTable[pos][perfectHashKey(pos)];
+	} else {
+		val = openTable[pos];
+	}
+	return val;
 }
 
 /* Param: int key
 *  Desc: deletes the value in table that corresponds to the given key
 *  Returns: returns `true` if deleted or `false` if key not found
 */
-bool HashTable::delete(int key){
-	bool found = false;
-	//TODO: Delete key, set found to true
-	return found;
+bool HashTable::remove(int key){
+	int pos = hashKey(key);
+	int val = -5;
+	if (method == PERFECT) {
+		val = perfectTable[pos][perfectHashKey(pos)];
+		perfectTable[pos][perfectHashKey(pos)] = -2;
+	} else {
+		val = openTable[pos];
+		openTable[pos] = -2;
+	}
+	return (val != -5);
 }
 
 /*---------------PRIVATE METHODS---------------*/
@@ -80,6 +81,11 @@ int HashTable::hashKey(int key){
 	//TODO: hash key, set pos
 	return pos;
 }
+
+int HashTable::perfectHashKey(int key){
+	return -1;
+}
+
 
 /* Param: int key
 *  Desc: hashes `key` linearly
@@ -95,11 +101,27 @@ int HashTable::linearHash(int key){
 *  Desc: hashes `key` quadtratically
 *  Returns: returns its location in the table
 */
-int HashTable::quadtraticHash(int key){
+int HashTable::quadraticHash(int key){
 	int retVal = -1;
 	//TODO: hash key
 	return retVal;
 }
+
+/* Param: int key
+*  Desc: hashes `key` using double hash method
+*  Returns: returns its location in the table
+*/
+int HashTable::doubleHash(int key) {
+	int m = openTable.size(); // FIX THIS BETTER
+	int interval = 1 + (key % (m-1));
+	int idx = key % m;
+	// find empty spot. -1 if empty, -2 if deleted
+	while (openTable[idx] > -1) {
+		idx += interval;
+	}
+	return idx;
+}
+
 
 /* Param: int key
 *  Desc: hashes `key` perfectly
