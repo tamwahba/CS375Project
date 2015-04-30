@@ -12,7 +12,7 @@ hashing algorithms as well as input types. Data values are generated using a pyt
 OpenHashTable
 -------------
 ###### public methods: -- Tamer
-- `OpenHashTable(METHODS m, int size)`
+- `OpenHashTable(METHOD m, int size)`
 	- initializes hash table with size `size` and hashing algorithm `m`
 - `void insert(int key, int value)`
 	- inserts `value` into table based on `key`
