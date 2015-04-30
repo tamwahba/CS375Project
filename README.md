@@ -9,10 +9,10 @@ Final group project for CS375 - Algorithms - class
 This is project is aimed at testing hash table performance based on different 
 hashing algorithms as well as input types. Data values are generated using a python script.
 
-OpenHashTable
+HashTable
 -------------
 ###### public methods: -- Tamer
-- `OpenHashTable(METHOD m, int size)`
+- `HashTable(METHOD m, int size)`
 	- initializes hash table with size `size` and hashing algorithm `m`
 - `void insert(int key, int value)`
 	- inserts `value` into table based on `key`
