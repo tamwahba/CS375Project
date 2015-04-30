@@ -5,7 +5,7 @@ HashTable::HashTable()
 		if (method == PERFECT)
 			perfectTable = std::vector<std::vector<int>>(100);
 		else
-			openTable = std::vector<int>(100);
+			openTable = std::vector<int>(100, -1); // initialize all values to -1
 }
 
 /* Param: METHOD m, int Size
@@ -16,7 +16,7 @@ HashTable::HashTable(METHOD m, int size)
 		if (method == PERFECT)
 			perfectTable = std::vector<std::vector<int>>(size);
 		else
-			openTable = std::vector<int>(size);
+			openTable = std::vector<int>(size, -1); // initialize all values to -1
 }
 
 HashTable::~HashTable()
@@ -106,6 +106,22 @@ int HashTable::quadraticHash(int key){
 	//TODO: hash key
 	return retVal;
 }
+
+/* Param: int key
+*  Desc: hashes `key` using double hash method
+*  Returns: returns its location in the table
+*/
+int HashTable::doubleHash(int key) {
+	int m = openTable.size(); // FIX THIS BETTER
+	int interval = 1 + (key % (m-1));
+	int idx = key % m;
+	// find empty spot. -1 if empty, -2 if deleted
+	while (openTable[idx] > -1) {
+		idx += interval;
+	}
+	return idx;
+}
+
 
 /* Param: int key
 *  Desc: hashes `key` perfectly
