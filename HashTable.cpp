@@ -1,13 +1,22 @@
 #include "HashTable.h"
 
 HashTable::HashTable()
-{
+	:method{LINEAR} {
+		if (method == PERFECT)
+			perfectTable = std::vector<std::vector<int>>(100);
+		else
+			openTable = std::vector<int>(100);
 }
 
 /* Param: METHOD m, int Size
 *  Desc: initializes hash table with size `size` and hashing algorithm `m`.
 */
-HashTable::HashTable(METHOD m, int size) {
+HashTable::HashTable(METHOD m, int size)
+	:method{m} {
+		if (method == PERFECT)
+			perfectTable = std::vector<std::vector<int>>(size);
+		else
+			openTable = std::vector<int>(size);
 }
 
 HashTable::~HashTable()
