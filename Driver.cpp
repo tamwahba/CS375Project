@@ -31,7 +31,7 @@ int main(int argc, const char *argv[]){
 		std::cout << "ERROR: Could not open input file " << inputFileName << std::endl;
 		usageString();
 	}else if(!outf.is_open()){
-		std::cout << "ERROR: Could not open input file " << outputFileName << std::endl;
+		std::cout << "ERROR: Could not open output file " << outputFileName << std::endl;
 		usageString();
 	}else if(argc != 3){
 		std::cout << "ERROR: 3 arguments were not specified" << std::endl;
