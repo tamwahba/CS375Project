@@ -77,9 +77,18 @@ bool HashTable::remove(int key){
 *  Returns: returns its location in the table
 */
 int HashTable::hashKey(int key){
-	int pos = 0;
-	//TODO: hash key, set pos
-	return pos;
+	int idx = -1;
+	//TODO: hash key, set idx
+	if(method == LINEAR){
+		idx = linaerHash(key);
+	}else if(method == QUADRATIC){
+		idx = quadraticHash(key);
+	}else if(method == DOUBLE){
+		idx = doubleHash(key);
+	}else if(method == PERFECT){
+		idx = perfectHash(key);
+	}
+	return idx;
 }
 
 int HashTable::perfectHashKey(int key){
@@ -92,9 +101,14 @@ int HashTable::perfectHashKey(int key){
 *  Returns: returns its location in the table
 */
 int HashTable::linearHash(int key){
-	int retVal = -1;
+	int retVal=-1, pos=0;
+	int size = openTable.size();
+	int idx = key % size;
 	//TODO: hash key
-	return retVal;
+	while (openTable[idx] > -1){
+		idx = (idx + 1) % size;
+	}
+	return idx;
 }
 
 /* Param: int key
