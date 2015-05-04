@@ -80,7 +80,7 @@ int HashTable::hashKey(int key){
 	int idx = -1;
 	//TODO: hash key, set idx
 	if(method == LINEAR){
-		idx = linaerHash(key);
+		idx = linearHash(key);
 	}else if(method == QUADRATIC){
 		idx = quadraticHash(key);
 	}else if(method == DOUBLE){
