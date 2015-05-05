@@ -1,7 +1,8 @@
 #include "HashTable.h"
 
 HashTable::HashTable()
-	:method{LINEAR} {
+	:method{LINEAR},
+	size{0} {
 		srand(time(0));
 		if (method == PERFECT) {
 			perfectTable = std::vector<std::vector<int>>(100, std::vector<int>(100, -1));
@@ -16,7 +17,8 @@ HashTable::HashTable()
 *  Desc: initializes hash table with size `size` and hashing algorithm `m`.
 */
 HashTable::HashTable(METHOD m, int size)
-	:method{m} {
+	:method{m},
+	size{0} {
 		if (method == PERFECT) {
 			srand(time(0));
 			perfectTable = std::vector<std::vector<int>>(size, std::vector<int>(size, -1));
@@ -32,9 +34,9 @@ HashTable::HashTable(METHOD m, int size)
 		}
 }
 
-HashTable::~HashTable()
-{
-}
+// HashTable::~HashTable()
+// {
+// }
 
 /*---------------PUBLIC METHODS---------------*/
 
@@ -44,11 +46,14 @@ HashTable::~HashTable()
 *  Returns: void
 */
 void HashTable::insert(int key, int value){
+	if (size == openTable.size())
+		return;
 	if (method == PERFECT) {
 		perfectTable[hashKey(key)][perfectHashKey(hashKey(key))] = value;
 		return;
 	}
 	openTable[hashKey(key)] = value;
+	size++;
 }
 
 /* Param: int key
@@ -80,7 +85,10 @@ bool HashTable::remove(int key){
 		val = openTable[pos];
 		openTable[pos] = -2;
 	}
-	return (val != -5);
+	bool removed = (val != -5);
+	if (removed)
+		size--;
+	return removed;
 }
 
 /*---------------PRIVATE METHODS---------------*/
@@ -164,13 +172,13 @@ int HashTable::doubleHash(int key) {
 int HashTable::perfectHash(int key){
 	int hashval = 0;
 	for (int i = 0; i < 16; i++) {
+		int sum = 0;
 		if ((key >> i) & 1) {
-			int sum = 0;
 			for (int j = 0; j < perfectHashFunction[i].size(); j++) {
 				sum += perfectHashFunction[i][j];
 			}
 		}
-		hashval << sum % 2;
+		hashval << (sum % 2);
 	}
 	return perfectTable[hashval][doubleHash(hashval)];
 }
