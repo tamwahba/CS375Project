@@ -1,10 +1,11 @@
 #include <iostream>
-#include <ostream>
 #include <fstream>
 #include <sstream>
 #include <string>
 #include <cstring> 
 #include <stdlib.h>
+
+#include "HashTable.h"
 
 /*
 * Print the usage string
@@ -28,6 +29,8 @@ int main(int argc, const char *argv[]){
 	std::string outputFileName = argv[2];
 	std::string methodChoice = argv[3];
 
+	std::ifstream in (inputFileName); // input
+	std::ofstream out(outputFileName);
 	if (!in.is_open())  {
 		std::cout << "ERROR: Could not open input file " << inputFileName << std::endl;
 		usageString();
@@ -60,30 +63,28 @@ int main(int argc, const char *argv[]){
 
 	int TOTAL_LINES = 0;
 	bool doOnce = false;	
-    HashTable* hash = new HashTable();// Create the HashTable
-
-	std::string line, input; //yeah ill use strings. 
-	std::ifstream in (inputFileName); // input
+    	HashTable hash(m, 10000);// Create the HashTable
 
 	if (in.good()) {
 		clock_t begin = clock();
 		
+	std::string input;
         while (std::getline(in, input)) {
 			// TODO
 			std::string word;
-	        istringstream iss(str, istringstream::in);
+	        std::istringstream iss(input, std::istringstream::in);
 
 	        if(!doOnce){
-	        	TOTAL_LINES = stoi(str); //First line of the file
-				hash->HashTable(m,TOTAL_LINES);
+	        	TOTAL_LINES = stoi(input); //First line of the file
+				hash = HashTable(m,TOTAL_LINES);
 	        	doOnce = true;
 	        }else{
 	        	while (iss >> word){
-	        		int key = stoi(word);
+	       	int key = stoi(word);
 	        		iss >> word;
 	        		int value = stoi(word);
 
-	        		hash->insert(key, value);
+	        		hash.insert(key, value);
 	        	}
 	        }
 		}
