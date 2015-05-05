@@ -74,23 +74,19 @@ int main(int argc, const char *argv[]){
 			int numOperations;
 			in >> operation;
 			in >> numOperations;
-			std::cout << operation << std::endl;
+			// std::cout << operation << std::endl;
 			for (int j = 0; j < numOperations; i++, j++) {
+				int key, value;
+				in >> key >> value;
 				if (operation == "INSERT") {
-					int key, value;
-					in >> key >> value;
-					std::cout << key << " " << value << std::endl;
-					// hash.insert(key, value);
+					// std::cout << key << " " << value << std::endl;
+					hash.insert(key, value);
 				} else if (operation == "DELETE") {
-					int key;
-					in >> key;
-					std::cout << key << std::endl;
-					// hash.remove(key);
+					// std::cout << key << std::endl;
+					hash.remove(key, value);
 				} else if (operation == "FIND") {
-					int key;
-					in >> key;
-					std::cout << key << std::endl;
-					// hash.find(key);
+					// std::cout << key << std::endl;
+					hash.find(key, value);
 				} else {
 					std::cout << "Invalid operation" << std::endl;
 					return 0;

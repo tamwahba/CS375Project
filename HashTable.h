@@ -16,15 +16,15 @@ public:
     HashTable(METHOD m, int size);
     // ~HashTable();
     void insert(int key, int value);
-    int find(int key);
-    bool remove(int key);
+    int find(int key, int val);
+    bool remove(int key, int val);
 
 private:
-	int hashKey(int key);
-	int perfectHashKey(int key);
-	int linearHash(int key);
-	int quadraticHash(int key);
-	int doubleHash(int key);
+	int hashKey(int key, int val);
+	int perfectHashKey(int key, int val);
+	int linearHash(int key, int val);
+	int quadraticHash(int key, int val);
+	int doubleHash(int key, int val);
 	int perfectHash(int key);
 
 private:

@@ -49,10 +49,10 @@ void HashTable::insert(int key, int value){
 	if (size == openTable.size())
 		return;
 	if (method == PERFECT) {
-		perfectTable[hashKey(key)][perfectHashKey(hashKey(key))] = value;
+		perfectTable[hashKey(key, value)][perfectHashKey(hashKey(key, value), value)] = value;
 		return;
 	}
-	openTable[hashKey(key)] = value;
+	openTable[hashKey(key, value)] = value;
 	size++;
 }
 
@@ -60,32 +60,32 @@ void HashTable::insert(int key, int value){
 *  Desc: finds the value that corresponds to the given key
 *  Returns: returns the value or `<-1` if not found
 */
-int HashTable::find(int key){
-	int pos = hashKey(key);
-	int val = -1;
+int HashTable::find(int key, int val){
+	int pos = hashKey(key, val);
+	int value = -1;
 	if (method == PERFECT) {
-		val = perfectTable[pos][perfectHashKey(pos)];
+		value = perfectTable[pos][perfectHashKey(pos, val)];
 	} else {
-		val = openTable[pos];
+		value = openTable[pos];
 	}
-	return val;
+	return value;
 }
 
 /* Param: int key
 *  Desc: deletes the value in table that corresponds to the given key
 *  Returns: returns `true` if deleted or `false` if key not found
 */
-bool HashTable::remove(int key){
-	int pos = hashKey(key);
-	int val = -5;
+bool HashTable::remove(int key, int val){
+	int pos = hashKey(key, val);
+	int value = -5;
 	if (method == PERFECT) {
-		val = perfectTable[pos][perfectHashKey(pos)];
-		perfectTable[pos][perfectHashKey(pos)] = -2;
+		value = perfectTable[pos][perfectHashKey(pos, val)];
+		perfectTable[pos][perfectHashKey(pos, val)] = -2;
 	} else {
-		val = openTable[pos];
+		value = openTable[pos];
 		openTable[pos] = -2;
 	}
-	bool removed = (val != -5);
+	bool removed = (value != -5);
 	if (removed)
 		size--;
 	return removed;
@@ -97,23 +97,30 @@ bool HashTable::remove(int key){
 *  Desc: hashes `key` based on specified method
 *  Returns: returns its location in the table
 */
-int HashTable::hashKey(int key){
+int HashTable::hashKey(int key, int val){
 	int idx = -1;
 	//TODO: hash key, set idx
 	if(method == LINEAR){
-		idx = linearHash(key);
+		idx = linearHash(key, val);
 	}else if(method == QUADRATIC){
-		idx = quadraticHash(key);
+		idx = quadraticHash(key, val);
 	}else if(method == DOUBLE){
-		idx = doubleHash(key);
+		idx = doubleHash(key, val);
 	}else if(method == PERFECT){
 		idx = perfectHash(key);
 	}
 	return idx;
 }
 
-int HashTable::perfectHashKey(int key){
-	return -1;
+int HashTable::perfectHashKey(int key, int val){
+	int m = perfectTable[key].size(); // FIX THIS BETTER
+	int interval = 1 + (key % (m-1));
+	int idx = key % m;
+	// find empty spot. -1 if empty, -2 if deleted
+	while (perfectTable[key][idx] > -1 && val != perfectTable[key][idx]) {
+		idx += interval;  // mod size (i.e. could go out of range, need to wrap around) to beginning
+	}
+	return idx;
 }
 
 
@@ -121,12 +128,12 @@ int HashTable::perfectHashKey(int key){
 *  Desc: hashes `key` linearly
 *  Returns: returns its location in the table
 */
-int HashTable::linearHash(int key){
+int HashTable::linearHash(int key, int val){
 	int retVal=-1, pos=0;
 	int size = openTable.size();
 	int idx = key % size;
 	//TODO: hash key
-	while (openTable[idx] > -1){
+	while (openTable[idx] > -1 && val != openTable[idx]){
 		idx = (idx + 1) % size;
 	}
 	return idx;
@@ -136,13 +143,13 @@ int HashTable::linearHash(int key){
 *  Desc: hashes `key` quadtratically
 *  Returns: returns its location in the table
 */
-int HashTable::quadraticHash(int key){
+int HashTable::quadraticHash(int key, int val){
 	int retVal = 0, pos=0, idx=0, interval=0; 
 	// quadratic function 1 
 	//  h(k), h(k)+2, h(k)+6...   
 	int size = openTable.size(); // size = m number of slots
 	interval = key % size;
-	while (openTable[idx] > -1) {
+	while (openTable[idx] > -1 && val != openTable[idx]) {
 		idx =(  (interval + pos + (pos*pos)) %size);
 		pos++;	
 	}
@@ -153,12 +160,12 @@ int HashTable::quadraticHash(int key){
 *  Desc: hashes `key` using double hash method
 *  Returns: returns its location in the table
 */
-int HashTable::doubleHash(int key) {
+int HashTable::doubleHash(int key, int val) {
 	int m = openTable.size(); // FIX THIS BETTER
 	int interval = 1 + (key % (m-1));
 	int idx = key % m;
 	// find empty spot. -1 if empty, -2 if deleted
-	while (openTable[idx] > -1) {
+	while (openTable[idx] > -1 && val != openTable[idx]) {
 		idx += interval;  // mod size (i.e. could go out of range, need to wrap around) to beginning
 	}
 	return idx;
@@ -180,5 +187,5 @@ int HashTable::perfectHash(int key){
 		}
 		hashval << (sum % 2);
 	}
-	return perfectTable[hashval][doubleHash(hashval)];
+	return hashval;
 }
