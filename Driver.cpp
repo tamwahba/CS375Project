@@ -107,13 +107,9 @@ int main(int argc, const char *argv[]){
 					clock_t findT = clock();
 					hash.find(key, value);
 					clock_t endFind = clock();
-					//std::cout << "endFind at " << endFind << std::endl;
 					temp = double (endFind - findT) / (CLOCKS_PER_SEC);
 					findCtr++;
-					//std::cout << "find elapsed time: " << temp << std::endl;
 					avgFind += temp;
-					//std::cout << "avgFind set to : " << avgFind << std::endl;
-					//std::cout << "findCtr " << findCtr << std::endl;
 				} else {
 					std::cout << "Invalid operation" << std::endl;
 					return 0;
