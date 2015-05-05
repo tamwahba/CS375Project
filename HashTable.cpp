@@ -2,10 +2,14 @@
 
 HashTable::HashTable()
 	:method{LINEAR} {
-		if (method == PERFECT)
-			perfectTable = std::vector<std::vector<int>>(100);
-		else
+		srand(time(0));
+		if (method == PERFECT) {
+			perfectTable = std::vector<std::vector<int>>(100, std::vector<int>(100, -1));
+			perfectHashFunction = std::vector<std::vector<bool>>(16, std::vector<bool>(16));
+		}
+		else {
 			openTable = std::vector<int>(100, -1); // initialize all values to -1
+		}
 }
 
 /* Param: METHOD m, int Size
@@ -13,10 +17,19 @@ HashTable::HashTable()
 */
 HashTable::HashTable(METHOD m, int size)
 	:method{m} {
-		if (method == PERFECT)
-			perfectTable = std::vector<std::vector<int>>(size);
-		else
+		if (method == PERFECT) {
+			srand(time(0));
+			perfectTable = std::vector<std::vector<int>>(size, std::vector<int>(size, -1));
+			perfectHashFunction = std::vector<std::vector<bool>>(16, std::vector<bool>(16));
+			for (int i = 0; i < perfectHashFunction.size(); i++) {
+				for (int j = 0; j < perfectHashFunction.size(); j++) {
+					perfectHashFunction[i][j] = rand() % 2;
+				}
+			}
+		}
+		else {
 			openTable = std::vector<int>(size, -1); // initialize all values to -1
+		}
 }
 
 HashTable::~HashTable()
@@ -149,7 +162,15 @@ int HashTable::doubleHash(int key) {
 *  Returns: returns its location in the table
 */
 int HashTable::perfectHash(int key){
-	int retVal = -1;
-	//TODO: hash key
-	return retVal;
+	int hashval = 0;
+	for (int i = 0; i < 16; i++) {
+		if ((key >> i) & 1) {
+			int sum = 0;
+			for (int j = 0; j < perfectHashFunction[i].size(); j++) {
+				sum += perfectHashFunction[i][j];
+			}
+		}
+		hashval << sum % 2;
+	}
+	return perfectTable[hashval][doubleHash(hashval)];
 }

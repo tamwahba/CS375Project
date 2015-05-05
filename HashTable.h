@@ -1,4 +1,6 @@
 #include <vector>
+#include <ctime>
+#include <cstdlib>
 
 enum METHOD
 {
@@ -28,5 +30,6 @@ private:
 private:
 	std::vector<int> openTable;
 	std::vector<std::vector<int>> perfectTable;
+	std::vector<std::vector<bool>> perfectHashFunction;
 	METHOD method;
 };
