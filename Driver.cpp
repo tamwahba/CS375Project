@@ -28,8 +28,6 @@ int main(int argc, const char *argv[]){
 	std::string outputFileName = argv[2];
 	std::string methodChoice = argv[3];
 
-	std::string line, input; //yeah ill use strings. 
-	std::ifstream in (inputFileName); // input
 	if (!in.is_open())  {
 		std::cout << "ERROR: Could not open input file " << inputFileName << std::endl;
 		usageString();
@@ -41,12 +39,55 @@ int main(int argc, const char *argv[]){
 		usageString();
 	}
 
+	METHOD m;
+	switch(stoi(methodChoice)){
+		case 1:
+			m = LINEAR;
+			break;
+		case 2:
+			m = QUADRATIC;
+			break;
+		case 3:
+			m = DOUBLE;
+			break;
+		case 4:
+			m = PERFECT;
+			break;
+		default:
+			std::cout << "ERROR: Invalid algorithm choice " << methodChoice << std::endl;
+			usageString();
+	}
+
+	int TOTAL_LINES = 0;
+	bool doOnce = false;	
+    HashTable* hash = new HashTable();// Create the HashTable
+
+	std::string line, input; //yeah ill use strings. 
+	std::ifstream in (inputFileName); // input
+
 	if (in.good()) {
 		clock_t begin = clock();
-        while (getline(in, input)) {
-		// TODO	
+		
+        while (std::getline(in, input)) {
+			// TODO
+			std::string word;
+	        istringstream iss(str, istringstream::in);
 
+	        if(!doOnce){
+	        	TOTAL_LINES = stoi(str); //First line of the file
+				hash->HashTable(m,TOTAL_LINES);
+	        	doOnce = true;
+	        }else{
+	        	while (iss >> word){
+	        		int key = stoi(word);
+	        		iss >> word;
+	        		int value = stoi(word);
+
+	        		hash->insert(key, value);
+	        	}
+	        }
 		}
+
     	clock_t end = clock();
 	    double t_elapsed = double (end - begin) / (CLOCKS_PER_SEC);
 	}
