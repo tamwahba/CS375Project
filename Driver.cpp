@@ -63,32 +63,40 @@ int main(int argc, const char *argv[]){
 
 	int TOTAL_LINES = 0;
 	bool doOnce = false;	
-    	HashTable hash(m, 10000);// Create the HashTable
+    HashTable hash(m, 10000);// Create the HashTable
 
 	if (in.good()) {
 		clock_t begin = clock();
-		
-	std::string input;
-        while (std::getline(in, input)) {
-			// TODO
-			std::string word;
-	        std::istringstream iss(input, std::istringstream::in);
-
-	        if(!doOnce){
-	        	TOTAL_LINES = stoi(input); //First line of the file
-				hash = HashTable(m,TOTAL_LINES);
-	        	doOnce = true;
-	        }else{
-	        	while (iss >> word){
-	       	int key = stoi(word);
-	        		iss >> word;
-	        		int value = stoi(word);
-
-	        		hash.insert(key, value);
-	        	}
-	        }
+		int numLines;
+		std::string operation;
+		in >> numLines;
+		for (int i = 0; i < numLines; i++) {
+			int numOperations;
+			in >> operation;
+			in >> numOperations;
+			std::cout << operation << std::endl;
+			for (int j = 0; j < numOperations; i++, j++) {
+				if (operation == "INSERT") {
+					int key, value;
+					in >> key >> value;
+					std::cout << key << " " << value << std::endl;
+					// hash.insert(key, value);
+				} else if (operation == "DELETE") {
+					int key;
+					in >> key;
+					std::cout << key << std::endl;
+					// hash.remove(key);
+				} else if (operation == "FIND") {
+					int key;
+					in >> key;
+					std::cout << key << std::endl;
+					// hash.find(key);
+				} else {
+					std::cout << "Invalid operation" << std::endl;
+					return 0;
+				}
+			}
 		}
-
     	clock_t end = clock();
 	    double t_elapsed = double (end - begin) / (CLOCKS_PER_SEC);
 	}
