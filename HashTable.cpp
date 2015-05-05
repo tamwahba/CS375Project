@@ -137,7 +137,7 @@ int HashTable::linearHash(int key){
 *  Returns: returns its location in the table
 */
 int HashTable::quadraticHash(int key){
-	int retVal = -1, pos=0, idx=0, interval=0; 
+	int retVal = 0, pos=0, idx=0, interval=0; 
 	// quadratic function 1 
 	//  h(k), h(k)+2, h(k)+6...   
 	int size = openTable.size(); // size = m number of slots
@@ -146,7 +146,7 @@ int HashTable::quadraticHash(int key){
 		idx =(  (interval + pos + (pos*pos)) %size);
 		pos++;	
 	}
-	return openTable[idx] > -1 ? idx : retVal;
+	return idx;
 }
 
 /* Param: int key
