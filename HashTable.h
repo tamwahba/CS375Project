@@ -15,6 +15,7 @@ public:
     HashTable();
     HashTable(METHOD m, int size);
     // ~HashTable();
+    int getSize();
     void insert(int key, int value);
     int find(int key, int val);
     bool remove(int key, int val);

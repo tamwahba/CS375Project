@@ -40,6 +40,9 @@ HashTable::HashTable(METHOD m, int size)
 
 /*---------------PUBLIC METHODS---------------*/
 
+int HashTable::getSize() {
+	return size;
+}
 
 /* Param: int key, int value
 *  Desc: inserts `value` into table based on `key`
