@@ -6,7 +6,7 @@ HashTable::HashTable()
 		srand(time(0));
 		if (method == PERFECT) {
 			perfectTable = std::vector<std::vector<int>>(100, std::vector<int>(100, -1));
-			perfectHashFunction = std::vector<std::vector<bool>>(16, std::vector<bool>(16));
+			perfectHashFunction = std::vector<std::vector<bool>>(12, std::vector<bool>(16));
 		}
 		else {
 			openTable = std::vector<int>(100, -1); // initialize all values to -1
@@ -22,9 +22,9 @@ HashTable::HashTable(METHOD m, int size)
 		if (method == PERFECT) {
 			srand(time(0));
 			perfectTable = std::vector<std::vector<int>>(size, std::vector<int>(size, -1));
-			perfectHashFunction = std::vector<std::vector<bool>>(16, std::vector<bool>(16));
+			perfectHashFunction = std::vector<std::vector<bool>>(12, std::vector<bool>(16));
 			for (int i = 0; i < perfectHashFunction.size(); i++) {
-				for (int j = 0; j < perfectHashFunction.size(); j++) {
+				for (int j = 0; j < perfectHashFunction[i].size(); j++) {
 					perfectHashFunction[i][j] = rand() % 2;
 				}
 			}
@@ -46,13 +46,16 @@ HashTable::HashTable(METHOD m, int size)
 *  Returns: void
 */
 void HashTable::insert(int key, int value){
-	if (size == openTable.size())
-		return;
 	if (method == PERFECT) {
-		perfectTable[hashKey(key, value)][perfectHashKey(hashKey(key, value), value)] = value;
+		int perf = hashKey(key, value);
+		int perfperf = perfectHashKey(perf, value);
+		perfectTable[perf][perfperf] = value;
 		return;
+	} else {
+		if (size == openTable.size() || hashKey(key, value) == -1)
+			return;
+		openTable[hashKey(key, value)] = value;
 	}
-	openTable[hashKey(key, value)] = value;
 	size++;
 }
 
@@ -119,6 +122,7 @@ int HashTable::perfectHashKey(int key, int val){
 	// find empty spot. -1 if empty, -2 if deleted
 	while (perfectTable[key][idx] > -1 && val != perfectTable[key][idx]) {
 		idx += interval;  // mod size (i.e. could go out of range, need to wrap around) to beginning
+		idx %= m; 
 	}
 	return idx;
 }
@@ -150,8 +154,10 @@ int HashTable::quadraticHash(int key, int val){
 	int size = openTable.size(); // size = m number of slots
 	interval = key % size;
 	while (openTable[idx] > -1 && val != openTable[idx]) {
-		idx =(  (interval + pos + (pos*pos)) %size);
-		pos++;	
+		idx = ((interval + (pos*pos)) % size);
+		pos++;
+		if (pos == size)
+			return -1;
 	}
 	return idx;
 }
@@ -167,6 +173,7 @@ int HashTable::doubleHash(int key, int val) {
 	// find empty spot. -1 if empty, -2 if deleted
 	while (openTable[idx] > -1 && val != openTable[idx]) {
 		idx += interval;  // mod size (i.e. could go out of range, need to wrap around) to beginning
+		idx %= m;
 	}
 	return idx;
 }
@@ -178,14 +185,14 @@ int HashTable::doubleHash(int key, int val) {
 */
 int HashTable::perfectHash(int key){
 	int hashval = 0;
-	for (int i = 0; i < 16; i++) {
+	for (int i = 0; i < 10; i++) {
 		int sum = 0;
 		if ((key >> i) & 1) {
 			for (int j = 0; j < perfectHashFunction[i].size(); j++) {
 				sum += perfectHashFunction[i][j];
 			}
 		}
-		hashval << (sum % 2);
+		hashval = (hashval | (sum % 2)) << 1;
 	}
 	return hashval;
 }
