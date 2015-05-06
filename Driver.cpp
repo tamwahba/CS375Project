@@ -68,7 +68,7 @@ int main(int argc, const char *argv[]){
 
 	int TOTAL_LINES=0, insertCtr = 0, deleteCtr =0, findCtr= 0;
 	bool doOnce = false;	
-    HashTable hash(m, 10000);// Create the HashTable
+    HashTable hash(m, 10007);// Create the HashTable
 	double avgInsert, avgDelete, avgFind, temp;
 	if (in.good()) {
 		clock_t begin = clock();
